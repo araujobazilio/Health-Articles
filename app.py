@@ -12,7 +12,7 @@ from langchain_community.tools import DuckDuckGoSearchRun
 from crewai.tools import BaseTool # Adicionado import
 from pydantic import Field # Adicionado import
 import io # Adicionado para manipulação de bytes
-from xhtml2pdf import pisa # Adicionado para PDF
+from weasyprint import HTML # Substituído xhtml2pdf por WeasyPrint
 from markdown import markdown # Adicionado para converter Markdown para HTML
 
 # Carrega variáveis de ambiente do arquivo .env
@@ -167,17 +167,12 @@ def convert_markdown_to_pdf(markdown_content):
     
     result = io.BytesIO() # Cria um buffer de bytes para o PDF
     
-    # Cria o PDF
-    pdf = pisa.CreatePDF(
-            io.StringIO(html_with_style),  # Usa o HTML com estilo
-            dest=result
-    )
+    # Cria o PDF usando WeasyPrint
+    HTML(string=html_with_style).write_pdf(result)
     
-    if not pdf.err:
-        return result.getvalue() # Retorna os bytes do PDF
-    else:
-        st.error(f"Erro ao gerar PDF: {pdf.err}")
-        return None
+    # Retorna os bytes do PDF
+    result.seek(0)
+    return result.getvalue()
 
 def main():
     # Interface Streamlit

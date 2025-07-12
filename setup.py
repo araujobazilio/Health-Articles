@@ -28,7 +28,7 @@ install_requires = [
     "pydantic==2.0.3",
     
     # PDF e formatação
-    "xhtml2pdf==0.2.12",
+    "WeasyPrint==60.2",  # Substituído xhtml2pdf por WeasyPrint
     "reportlab==4.0.4",
     
     # Outras dependências
@@ -37,7 +37,7 @@ install_requires = [
     
     # Dependências com versões fixas para evitar conflitos
     "rich==13.7.0",
-    "instructor==1.8.2"
+    "instructor>=0.5.2,<0.6.0"  # Versão compatível com crewai
 ]
 
 # Configuração para evitar instalação de dependências opcionais

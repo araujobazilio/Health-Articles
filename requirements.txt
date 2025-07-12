@@ -9,7 +9,8 @@ tiktoken==0.5.2
 openai>=1.7.1,<2.0.0  # Atualizado para atender ao requisito do crewai
 numpy==1.26.4  # Atualizado para versão mais recente disponível
 pydantic>=2.4.2,<3.0.0
-xhtml2pdf==0.2.12
+# Removido xhtml2pdf que requer cairo
+WeasyPrint==60.2  # Alternativa ao xhtml2pdf que funciona melhor no Streamlit Cloud
 reportlab==4.0.4
 requests==2.31.0
 duckduckgo-search==3.9.6
