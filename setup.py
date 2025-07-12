@@ -24,12 +24,11 @@ install_requires = [
     "openai>=1.7.1,<2.0.0",  # Atualizado para atender ao requisito do crewai
     
     # Processamento de dados
-    "numpy==1.24.3",
-    "pydantic==2.0.3",
+    "numpy>=1.22.0,<1.25.0",  # Versão pré-compilada para evitar problemas
+    "pydantic>=2.4.2,<3.0.0",  # Compatível com crewai
     
-    # PDF e formatação
-    "WeasyPrint==60.2",  # Substituído xhtml2pdf por WeasyPrint
-    "reportlab==4.0.4",
+    # PDF e formatação - simplificado para evitar problemas de compilação
+    "reportlab==3.6.13",
     
     # Outras dependências
     "requests==2.31.0",
@@ -37,7 +36,10 @@ install_requires = [
     
     # Dependências com versões fixas para evitar conflitos
     "rich==13.7.0",
-    "instructor>=0.5.2,<0.6.0"  # Versão compatível com crewai
+    "instructor>=0.5.2,<0.6.0",  # Versão compatível com crewai
+    
+    # Adicionando setuptools para resolver problema com distutils
+    "setuptools>=65.5.0"
 ]
 
 # Configuração para evitar instalação de dependências opcionais

@@ -12,7 +12,10 @@ from langchain_community.tools import DuckDuckGoSearchRun
 from crewai.tools import BaseTool # Adicionado import
 from pydantic import Field # Adicionado import
 import io # Adicionado para manipulação de bytes
-from weasyprint import HTML # Substituído xhtml2pdf por WeasyPrint
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.units import inch
 from markdown import markdown # Adicionado para converter Markdown para HTML
 
 # Carrega variáveis de ambiente do arquivo .env
@@ -133,42 +136,67 @@ Realize as correções e melhorias necessárias diretamente no texto para produz
             context = [] # Contexto será preenchido com a saída da tarefa de escrita
         )
 
-# Função para converter Markdown para PDF
+# Função para converter Markdown para PDF usando ReportLab
 def convert_markdown_to_pdf(markdown_content):
-    # Converte markdown para HTML
-    html_content = markdown(markdown_content)
+    # Cria um buffer de bytes para o PDF
+    result = io.BytesIO()
     
-    # Adiciona um estilo básico para melhor formatação do PDF
-    html_with_style = f"""
-    <html>
-    <head>
-        <style>
-            body {{ font-family: sans-serif; line-height: 1.6; }}
-            h1, h2, h3, h4, h5, h6 {{ font-weight: bold; margin-top: 1.5em; margin-bottom: 0.5em; }}
-            h1 {{ font-size: 1.8em; }}
-            h2 {{ font-size: 1.5em; }}
-            h3 {{ font-size: 1.3em; }}
-            p {{ margin-bottom: 1em; }}
-            ul, ol {{ margin-bottom: 1em; padding-left: 1.5em; }}
-            li {{ margin-bottom: 0.3em; }}
-            code {{ font-family: monospace; background-color: #f0f0f0; padding: 2px 4px; border-radius: 3px; }}
-            pre {{ background-color: #f0f0f0; padding: 1em; border-radius: 3px; overflow-x: auto; }}
-            blockquote {{ border-left: 3px solid #ccc; padding-left: 1em; margin-left: 0; font-style: italic; color: #555; }}
-            table {{ border-collapse: collapse; width: 100%; margin-bottom: 1em; }}
-            th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-            th {{ background-color: #f2f2f2; }}
-        </style>
-    </head>
-    <body>
-        {html_content}
-    </body>
-    </html>
-    """
+    # Configura o documento PDF
+    doc = SimpleDocTemplate(result, pagesize=A4)
+    styles = getSampleStyleSheet()
     
-    result = io.BytesIO() # Cria um buffer de bytes para o PDF
+    # Adiciona estilos personalizados
+    styles.add(ParagraphStyle(
+        name='Heading1',
+        parent=styles['Heading1'],
+        fontSize=18,
+        spaceAfter=12
+    ))
     
-    # Cria o PDF usando WeasyPrint
-    HTML(string=html_with_style).write_pdf(result)
+    styles.add(ParagraphStyle(
+        name='Heading2',
+        parent=styles['Heading2'],
+        fontSize=16,
+        spaceAfter=10
+    ))
+    
+    styles.add(ParagraphStyle(
+        name='Heading3',
+        parent=styles['Heading3'],
+        fontSize=14,
+        spaceAfter=8
+    ))
+    
+    styles.add(ParagraphStyle(
+        name='BodyText',
+        parent=styles['BodyText'],
+        fontSize=12,
+        leading=14,
+        spaceAfter=10
+    ))
+    
+    # Divide o conteúdo em linhas para processar
+    lines = markdown_content.split('\n')
+    flowables = []
+    
+    # Processa cada linha e converte para elementos do ReportLab
+    for line in lines:
+        # Cabeçalhos
+        if line.startswith('# '):
+            flowables.append(Paragraph(line[2:], styles['Heading1']))
+        elif line.startswith('## '):
+            flowables.append(Paragraph(line[3:], styles['Heading2']))
+        elif line.startswith('### '):
+            flowables.append(Paragraph(line[4:], styles['Heading3']))
+        # Parágrafos normais
+        elif line.strip() != '':
+            flowables.append(Paragraph(line, styles['BodyText']))
+        # Linhas em branco
+        else:
+            flowables.append(Spacer(1, 0.2 * inch))
+    
+    # Constrói o PDF
+    doc.build(flowables)
     
     # Retorna os bytes do PDF
     result.seek(0)

@@ -8,11 +8,20 @@ mdurl==0.1.2
 # tiktoken removido pois requer compilação
 # O OpenAI funciona sem ele, apenas será um pouco mais lento
 openai>=1.7.1,<2.0.0  # Atualizado para atender ao requisito do crewai
-numpy==1.24.3  # Versão compatível com Python 3.9
+
+# Usando versão pré-compilada do numpy para evitar problemas de compilação
+numpy>=1.22.0,<1.25.0
+
 pydantic>=2.4.2,<3.0.0
+
 # Removido xhtml2pdf que requer cairo
-WeasyPrint==60.2  # Alternativa ao xhtml2pdf que funciona melhor no Streamlit Cloud
-reportlab==4.0.4
+# WeasyPrint também removido pois requer compilação
+# Vamos usar alternativas mais simples para PDF
+reportlab==3.6.13
+
 requests==2.31.0
 duckduckgo-search==3.9.6
 instructor>=0.5.2,<0.6.0
+
+# Adicionando setuptools para resolver problema com distutils
+setuptools>=65.5.0
