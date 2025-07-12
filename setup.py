@@ -20,8 +20,8 @@ install_requires = [
     "mdurl==0.1.2",
     
     # OpenAI
-    "tiktoken==0.5.2",
-    "openai==1.3.0",
+    # tiktoken removido pois requer compilação
+    "openai>=1.7.1,<2.0.0",  # Atualizado para atender ao requisito do crewai
     
     # Processamento de dados
     "numpy==1.24.3",

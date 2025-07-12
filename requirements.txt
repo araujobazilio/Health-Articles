@@ -5,9 +5,10 @@ langchain-community==0.0.14
 langchain-openai==0.0.5
 markdown==3.4.3
 mdurl==0.1.2
-tiktoken==0.5.2
+# tiktoken removido pois requer compilação
+# O OpenAI funciona sem ele, apenas será um pouco mais lento
 openai>=1.7.1,<2.0.0  # Atualizado para atender ao requisito do crewai
-numpy==1.26.4  # Atualizado para versão mais recente disponível
+numpy==1.24.3  # Versão compatível com Python 3.9
 pydantic>=2.4.2,<3.0.0
 # Removido xhtml2pdf que requer cairo
 WeasyPrint==60.2  # Alternativa ao xhtml2pdf que funciona melhor no Streamlit Cloud
