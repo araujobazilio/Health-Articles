@@ -13,4 +13,4 @@ xhtml2pdf==0.2.12
 reportlab==4.0.4
 requests==2.31.0
 duckduckgo-search==3.9.6
-instructor==1.8.2
+instructor>=0.5.2,<0.6.0
